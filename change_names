@@ -1,0 +1,30 @@
+#!/bin/bash
+# Change paths to baseline </Volumes/Luria/CONTE_OCD/$SUBJECT/BL_MRI>
+# and post-tx data </Volumes/Luria/CONTE_OCD/$SUBJECT/Post-tx_MRI>.
+
+echo "Enter subject ID number: "
+read SUBJECT
+
+	     cd /Volumes/Luria/CONTE_OCD/$SUBJECT/BL_MRI
+	     echo "------  Moving files and making new directories!  -------!"
+	     gzip -d *.nii.gz
+	     
+	     mv mutibandbold340news012a001.nii ssrt1.nii
+	     mv mutibandbold340news013a001.nii ssrt2.nii
+	     mv mutibandbold480news014a001.nii msit.nii
+	     mv T1MEMPRAGE12mmp4s007a1001.nii T1.nii
+	     mv SMSMinn2p4mmREST1s009a001.nii rest1.nii
+	     mv SMSMinn2p4mmREST1s011a001.nii rest2.nii
+
+	     cd /Volumes/Luria/CONTE_OCD/$SUBJECT/Post-tx_MRI
+	     echo "------  Moving files and making new directories!  -------!"
+	     gzip -d *.nii.gz
+	     mv mutibandbold340news012a001.nii ssrt1.nii
+	     mv mutibandbold340news013a001.nii ssrt2.nii
+	     mv mutibandbold480news014a001.nii msit.nii
+	     mv T1MEMPRAGE12mmp4s007a1001.nii T1.nii
+	     mv SMSMinn2p4mmREST1s009a001.nii rest1.nii
+	     mv SMSMinn2p4mmREST1s011a001.nii rest2.nii
+
+	    
+	     

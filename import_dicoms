@@ -1,0 +1,30 @@
+#!/bin/bash
+# Commented lines are ignored and not executed.
+# Change these strings to match your directory structure.
+# </Applications/mricron/dcm2nii> -the location of the dcm2nii binary in the mricron application.
+# <-o /Volumes/Luria/CONTE_OCD/$SUBJECT/> -path to where you want to store niftis.
+# <y /Volumes/Luria/CONTE_OCD/Controls/$SUBJECT/> -path to where dicoms are stored.
+
+
+echo "Enter subject ID number: "
+read SUBJECT
+
+if [ -d "$SUBJECT" ]; then
+    echo "Directory exists...making session directory!"
+    cd $SUBJECT
+    echo "Importing dicoms and converting to 4D nifti files!"
+    /Applications/mricron/dcm2nii -4 y -a y -d n -n y -o /Volumes/Luria/CONTE_OCD/$SUBJECT/BL_MRI/ -p y -r n -v y /Volumes/Luria/CONTE_OCD/$SUBJECT/BL_MRI/
+    /Applications/mricron/dcm2nii -4 y -a y -d n -n y -o /Volumes/Luria/CONTE_OCD/$SUBJECT/Post-tx_MRI/ -p y -r n -v y /Volumes/Luria/CONTE_OCD/$SUBJECT/Post-tx_MRI/
+    #/Applications/mricron/dcm2nii -4 y -a y -c Y -d n -n y -o /Volumes/Luria/CONTE_OCD/$SUBJECT/ -p y -r n -v y /Volumes/Luria/CONTE_OCD/$SUBJECT/
+else
+    echo "Directory missing...making subject directory!"
+    mkdir $SUBJECT
+    cd $SUBJECT
+    echo "Making subject directory!"
+    echo "Importing dicoms and converting to 4D nifti files!"
+    /Applications/mricron/dcm2nii -4 y -a y -d n -n y -o /Volumes/Luria/CONTE_OCD/$SUBJECT/BL_MRI/ -p y -r n -v y /Volumes/Luria/CONTE_OCD/$SUBJECT/BL_MRI/
+    /Applications/mricron/dcm2nii -4 y -a y -d n -n y -o /Volumes/Luria/CONTE_OCD/$SUBJECT/Post-tx_MRI/ -p y -r n -v y /Volumes/Luria/CONTE_OCD/$SUBJECT/Post-tx_MRI/
+    #/Applications/mricron/dcm2nii -4 y -a y -c Y -d n -n y -o /Volumes/Luria/CONTE_OCD/$SUBJECT/ -p y -r n -v y /Volumes/Luria/CONTE_OCD/$SUBJECT/
+fi
+
+    
