@@ -1,4 +1,4 @@
-function load_ssrt_xlsx(filename,outfolder,run)
+function [pGCOR,pGNR,pINR,SSRT]  = load_ssrt_xlsx(filename,outfolder,run)
 % filename = '/Volumes/Luria/CONTE_OCD/scripts';
 % outfolder = '/Volumes/Luria/CONTE_OCD/422/BL_MRI';
 
@@ -23,74 +23,92 @@ if ~exist(outfolder),mkdir(outfolder),end
 
 
 %% Make trial event onset files
-% Columns: onsets in seconds, accuracy, RT 
+% Columns in trials: onsets in seconds, accuracy, RT. Adjust RTs for Eprime
+% clock.
 
-% Fixation - 1st event in trial sequence. If left commented, null events are 
-% treated as an implicit baseline by SPM.
-% f1 = find(strcmp(BL1(1,:),'Fix.OnsetTime'));
-% fixOnset = cell2mat(BL1(cellfun(@isnumeric,BL1(:,f1)),f1))-adjOnset;
+events = {'Go.OnsetTime','Go.ACC','Go.RT','Go1s.OnsetTime','Inhs.ACC',...
+          'Go1s.OnsetToOnsetTime','Inhs.OnsetTime','Inhs.RTTime','Go1s2.OnsetTime',...
+          'Inhs2.ACC','Go1s2.OnsetToOnsetTime','Inhs2.OnsetTime','Inhs2.RTTime'};
 
-%% Go trials
-go = find(strcmp(BL1(1,:),'Go.OnsetTime'));
-goACC = find(strcmp(BL1(1,:),'Go.ACC'));
-goRT = find(strcmp(BL1(1,:),'Go.RT'));
-goOnset(:,1) = (cell2mat(BL1(cellfun(@isnumeric,BL1(:,go)),go))-adjOnset)./1000;
-goOnset(:,2) = cell2mat(BL1(cellfun(@isnumeric,BL1(:,goACC)),goACC));
-goOnset(:,3) = cell2mat(BL1(cellfun(@isnumeric,BL1(:,goRT)),goRT));
-dlmwrite([outfolder,'/goOnset',num2str(run),'.txt'],goOnset(find(goOnset(:,2)==1),:),'delimiter','\t')
-dlmwrite([outfolder,'/goError',num2str(run),'.txt'],goOnset(find(goOnset(:,2)==0),:),'delimiter','\t')
+idx = zeros(1,length(events));
+
+for x = 1:length(events)
+    idx(x) = find(strcmp(BL1(1,:),events{x}));
+end
 
 
-%% Stop trials, staircase 1 - unclear what the Go2S series models...
-g1 = find(strcmp(BL1(1,:),'Go1s.OnsetTime'));
-iACC = find(strcmp(BL1(1,:),'Inhs.ACC'));
-iRT = find(strcmp(BL1(1,:),'Inhs.RT'));
-g1Onset(:,1) = (cell2mat(BL1(cellfun(@isnumeric,BL1(:,g1)),g1))-adjOnset)./1000;
-g1Onset(:,2) = cell2mat(BL1(cellfun(@isnumeric,BL1(:,iACC)),iACC));
-g1Onset(:,3) = cell2mat(BL1(cellfun(@isnumeric,BL1(:,iRT)),iRT));
-
-i1 = find(strcmp(BL1(1,:),'Inhs.OnsetTime'));
-inhsOnset = cell2mat(BL1(cellfun(@isnumeric,BL1(:,i1)),i1))-adjOnset;
-% g11 = find(strcmp(BL1(1,:),'Go2S.OnsetTime'));
-% g2SOnset = cell2mat(BL1(cellfun(@isnumeric,BL1(:,g11)),g11))-adjOnset;
-
-
-%% Stop trials, staircase 2 - unclear what the Go2S series models...
-g2 = find(strcmp(BL1(1,:),'Go1s2.OnsetTime'));
-i2ACC = find(strcmp(BL1(1,:),'Inhs2.ACC'));
-i2RT = find(strcmp(BL1(1,:),'Inhs2.RT'));
-g2Onset(:,1) = (cell2mat(BL1(cellfun(@isnumeric,BL1(:,g2)),g2))-adjOnset)./1000;
-g2Onset(:,2) = cell2mat(BL1(cellfun(@isnumeric,BL1(:,i2ACC)),i2ACC));
-g2Onset(:,3) = cell2mat(BL1(cellfun(@isnumeric,BL1(:,i2RT)),i2RT));
-
-i2 = find(strcmp(BL1(1,:),'Inhs2.OnsetTime'));
-inhsOnset = cell2mat(BL1(cellfun(@isnumeric,BL1(:,i2)),i2))-adjOnset;
-% g22 = find(strcmp(BL1(1,:),'Go2s2.OnsetTime'));
-% g2s2Onset = cell2mat(BL1(cellfun(@isnumeric,BL1(:,g22)),g22))-adjOnset;
+%% Remove non-numeric data and make trial type arrays
+goOnset=[];inhOnset1=[];inhOnset2=[];
+for x = 1:length(idx)
+    tmp = BL1(:,idx(x));
+    tmp(cellfun(@ischar,tmp))=[];
+    
+    if x < 4
+        goOnset(:,x)=cell2mat(tmp);
+    elseif x >3 && x<9
+        inhOnset1(:,(x-3))=cell2mat(tmp);
+    elseif x > 8
+        inhOnset2(:,(x-8))=cell2mat(tmp);
+    end
+end
 
 
-%% Collapse the staircases and write onset files
-sOnset = sortrows(vertcat(g1Onset,g2Onset));
-dlmwrite([outfolder,'/StopInhibit',num2str(run),'.txt'],sOnset(find(sOnset(:,2)==1),:),'delimiter','\t')
-dlmwrite([outfolder,'/StopResp',num2str(run),'.txt'],sOnset(find(sOnset(:,2)==0),:),'delimiter','\t')
+%% Concatenate staircases,split coditions by accuracy, adjust timing
+goOnset(:,1) = (goOnset(:,1)-adjOnset)./1000;
+goOnset(:,3) = goOnset(:,3)./1000;
+goCorr = goOnset(find(goOnset(:,2)==1),:);
+goErr = goOnset(find(goOnset(:,2)==0),:);
+goRT = sort(goOnset(:,3).*1000);
+
+%%
+inhOnset = vertcat(inhOnset1,inhOnset2);
+inhOnset(:,6) = inhOnset(:,5)-inhOnset(:,1);
+inhOnset(inhOnset(:,6)<0,6) = 0;
 
 
-%% For re-analysis, StopResp-GoTrim. Go distribution is trimmed to 
-%  control for differences in response speed.
+%% Behavioral metrics: directional accuracy, go omissions, Stop trial accuracy, and SSRT
+pGCOR = sum(goOnset(:,2))/length(goOnset(:,2));
+pGNR = (length(goErr(:,3))-length(find(goErr(:,3)>0)))/length(goOnset(:,2));
+pINR = sum(inhOnset(:,2))/length(inhOnset(:,2));
+
+% Calculate SSRT
+pInhFail = (length(inhOnset(:,2))-sum(inhOnset(:,2)))/length(inhOnset(:,2));
+pInhFail = round(pInhFail,4,'significant');
+ssd = inhOnset(:,3);
+
+[f,x] = ecdf(goRT);
+f = round(f,4,'significant');
+qRT = x(find(f==pInhFail),1);
+
+% Catch for rounding errors
+if isempty(qRT)
+    qRT = x(find(f==(pInhFail+.0001)),1);
+end
+
+if isempty(qRT)
+    qRT = x(find(f==(pInhFail-.0001)),1);
+end
+
+SSRT = qRT - mean(ssd);
 
 
-%% Parametric analysis w/SSD. Examine difference in stopping activation 
-%  between trials where stopping initiated early vs. late. Mean-normalized
-%  SSD for StopInhibit trials.
+%% Write onset files
+dlmwrite([outfolder,'/goOnset',num2str(run),'.txt'],goCorr,'delimiter','\t')
+dlmwrite([outfolder,'/goError',num2str(run),'.txt'],goErr,'delimiter','\t')
 
+inhCorr = inhOnset(find(inhOnset(:,2)==1),:);
+inhCorr(:,1) = (inhCorr(:,1)-adjOnset)./1000;
+inhCorr(:,7) = (inhCorr(:,3)+SSRT)./1000;
+idx = [3:6];
+inhCorr(:,idx)=[];
+dlmwrite([outfolder,'/StopInhibit',num2str(run),'.txt'],inhCorr,'delimiter','\t')
 
-%% For SSRT
-% Subtract avg. SSD from median no-signal RT
-% Compute avg. SSD as the avg. of avg. SSD for each staircase.
-
-
-
-
+inhErr = inhOnset(find(inhOnset(:,2)==0),:);
+inhErr(:,1) = (inhErr(:,1)-adjOnset)./1000;
+inhErr(:,7) = (inhErr(:,3)+inhErr(:,6))./1000;
+idx = [3:6];
+inhErr(:,idx)=[];
+dlmwrite([outfolder,'/StopResp',num2str(run),'.txt'],inhErr,'delimiter','\t')
 
 
 
