@@ -73,24 +73,11 @@ pINR = sum(inhOnset(:,2))/length(inhOnset(:,2));
 
 % Calculate SSRT
 pInhFail = (length(inhOnset(:,2))-sum(inhOnset(:,2)))/length(inhOnset(:,2));
-pInhFail = round(pInhFail,4,'significant');
 ssd = inhOnset(:,3);
-
 [f,x] = ecdf(goRT);
-f = round(f,4,'significant');
-qRT = x(find(f==pInhFail),1);
-
-% Catch for rounding errors
-if isempty(qRT)
-    qRT = x(find(f==(pInhFail+.0001)),1);
-end
-
-if isempty(qRT)
-    qRT = x(find(f==(pInhFail-.0001)),1);
-end
-
+[~,idx] = min(abs(f-pInhFail));
+qRT = x(idx);
 SSRT = qRT - mean(ssd);
-
 
 %% Write onset files
 dlmwrite([outfolder,'/goOnset',num2str(run),'.txt'],goCorr,'delimiter','\t')
