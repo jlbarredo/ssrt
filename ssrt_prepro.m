@@ -1,3 +1,6 @@
+%% This script runs preprocessing and artifact detection amd motion analysis 
+%  with the CONN Toolbox. Both CONN and SPM12 need to be on your MATLAB path.
+
 %% STUDY-SPECIFIC PARAMETERS
 STUDY_DIR = '/Volumes/Luria/CONTE_OCD';
 TR=1.0;
