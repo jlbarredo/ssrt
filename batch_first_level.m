@@ -1,4 +1,5 @@
-% List of open inputs
+%% Batch script for first-level analysis of the SSRT task. 'getTC' and 'ssrt_patients' must be in your scripts 
+%  folder or on your path.
 addpath(genpath('/Volumes/Luria/CONTE_OCD/scripts'))
 directory = ('/Volumes/Luria/CONTE_OCD');
 %sessions = {'BL_MRI','Post-tx_MRI'};               % Folders where pre-tx and post-tx data are kept
