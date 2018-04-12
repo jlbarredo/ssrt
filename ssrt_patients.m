@@ -122,7 +122,7 @@ fileID = fopen('goError.txt','r');
 tmp = textscan(fileID,'%f %f %f');
 fclose(fileID);
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(4).name = 'goError';
-matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(4).onset = tmp(:,1);
+matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(4).onset = tmp{1,1}(:,1);
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(4).duration = 0;
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(4).tmod = 0;
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(4).pmod = struct('name', {}, 'param', {}, 'poly', {});
