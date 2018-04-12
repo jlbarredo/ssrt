@@ -50,9 +50,12 @@ matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(3).tmod = 0;
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(3).pmod = struct('name', {}, 'param', {}, 'poly', {});
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(3).orth = 1;
 
+fileID = fopen('goError1.txt','r');
+tmp = textscan(fileID,'%f %f %f')
+fclose(fileID)
 tmp = dlmread(fullfile(bpath,subject,sessions{1},'goError.txt'));
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(4).name = 'goError';
-matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(4).onset = tmp(:,1);
+matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(4).onset = tmp{1,1}(:,1);
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(4).duration = 0;
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(4).tmod = 0;
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(4).pmod = struct('name', {}, 'param', {}, 'poly', {});
