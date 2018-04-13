@@ -1,4 +1,4 @@
-function [pGCOR,pGNR,pINR,SSRT]  = load_ssrt_xlsx(filename,outfolder,run)
+function [pGCOR,pGNR,mgoRT,pINR,SSRT]  = load_ssrt_xlsx(filename,outfolder,run)
 % filename = '/Volumes/Luria/CONTE_OCD/scripts';
 % outfolder = '/Volumes/Luria/CONTE_OCD/422/BL_MRI';
 
@@ -59,6 +59,7 @@ goOnset(:,3) = goOnset(:,3)./1000;
 goCorr = goOnset(find(goOnset(:,2)==1),:);
 goErr = goOnset(find(goOnset(:,2)==0),:);
 goRT = sort(goOnset(:,3).*1000);
+mgoRT = mean(goRT);
 
 %%
 inhOnset = vertcat(inhOnset1,inhOnset2);
