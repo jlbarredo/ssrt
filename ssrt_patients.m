@@ -26,7 +26,7 @@ load(fullfile(directory,subject,sessions{1},'csf1.mat'));
 
 
 %% Load session timing files (in order of session appearance)
-tmp = dlmread(fullfile(bpath,subject,sessions{1},'goOnset.txt'));
+tmp = dlmread(fullfile(bpath,subject,sessions{1},['goOnset',num2str(j),'.txt']));
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(1).name = 'Go';
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(1).onset = tmp(:,1);
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(1).duration = tmp(:,3);
@@ -34,7 +34,7 @@ matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(1).tmod = 0;
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(1).pmod = struct('name', {}, 'param', {}, 'poly', {});
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(1).orth = 1;
 
-tmp = dlmread(fullfile(bpath,subject,sessions{1},'StopInh.txt'));
+tmp = dlmread(fullfile(bpath,subject,sessions{1},['StopInh',num2str(j),'.txt']));
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(2).name = 'StopInh';
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(2).onset = tmp(:,1);
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(2).duration = tmp(:,3);
@@ -42,7 +42,7 @@ matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(2).tmod = 0;
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(2).pmod = struct('name', {}, 'param', {}, 'poly', {});
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(2).orth = 1;
 
-tmp = dlmread(fullfile(bpath,subject,sessions{1},'StopResp.txt'));
+tmp = dlmread(fullfile(bpath,subject,sessions{1},['StopResp',num2str(j),'.txt']));
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(3).name = 'StopResp';
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(3).onset = tmp(:,1);
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(3).duration = tmp(:,3);
@@ -50,7 +50,7 @@ matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(3).tmod = 0;
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(3).pmod = struct('name', {}, 'param', {}, 'poly', {});
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(3).orth = 1;
 
-fileID = fopen('goError.txt','r');
+fileID = fopen(fullfile(bpath,subject,sessions{1},['goError',num2str(j),'.txt'],'r'));
 tmp = textscan(fileID,'%f %f %f');
 fclose(fileID);
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond(4).name = 'goError';
@@ -69,10 +69,6 @@ matlabbatch{1}.spm.stats.fmri_spec.sess(1).hpf = highpass;  % 2 times the longes
 %% Clear empty coditions and make error regressors - start at end!
 if isempty(matlabbatch{1, 1}.spm.stats.fmri_spec.sess(1).cond(4).onset)
     matlabbatch{1, 1}.spm.stats.fmri_spec.sess(1).cond(4)=[];
-end
-
-if isempty(matlabbatch{1, 1}.spm.stats.fmri_spec.sess(1).cond(5).onset)
-    matlabbatch{1, 1}.spm.stats.fmri_spec.sess(1).cond(5)=[];
 end
 
 % Check for errors
@@ -94,7 +90,7 @@ load(fullfile(directory,subject,sessions{2},'csf2.mat'));
 
 
 %% Load session timing files (in order of session appearance)
-tmp = dlmread(fullfile(bpath,subject,sessions{2},'goOnset.txt'));
+tmp = dlmread(fullfile(bpath,subject,sessions{2},['goOnset',num2str(j),'.txt']));
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(1).name = 'goOnset';
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(1).onset = tmp(:,1);
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(1).duration = tmp(:,3);
@@ -102,7 +98,7 @@ matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(1).tmod = 0;
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(1).pmod = struct('name', {}, 'param', {}, 'poly', {});
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(1).orth = 1;
 
-tmp = dlmread(fullfile(bpath,subject,sessions{2},'StopInh.txt'));
+tmp = dlmread(fullfile(bpath,subject,sessions{2},['StopInh',num2str(j),'.txt']));
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(2).name = 'StopInh';
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(2).onset = tmp(:,1);
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(2).duration = tmp(:,3);
@@ -110,7 +106,7 @@ matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(2).tmod = 0;
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(2).pmod = struct('name', {}, 'param', {}, 'poly', {});
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(2).orth = 1;
 
-tmp = dlmread(fullfile(bpath,subject,sessions{2},'StopResp.txt'));
+tmp = dlmread(fullfile(bpath,subject,sessions{2},['StopResp',num2str(j),'.txt']));
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(3).name = 'StopResp';
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(3).onset = tmp(:,1);
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(3).duration = tmp(:,3);
@@ -118,7 +114,7 @@ matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(3).tmod = 0;
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(3).pmod = struct('name', {}, 'param', {}, 'poly', {});
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(3).orth = 1;
 
-fileID = fopen('goError.txt','r');
+fileID = fopen(fullfile(bpath,subject,sessions{2},['goError',num2str(j),'.txt'],'r'));
 tmp = textscan(fileID,'%f %f %f');
 fclose(fileID);
 matlabbatch{1}.spm.stats.fmri_spec.sess(2).cond(4).name = 'goError';
