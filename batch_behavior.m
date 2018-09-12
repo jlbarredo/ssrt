@@ -1,6 +1,6 @@
 %% Reads in a text file list of subject numbers and makes onset text files 
-%  for later fMRI or behavioral analyses. This script and the function that
-%  loads and sorts the onset need to be in the script folder.
+%  for later fMRI or behavioral analyses. As written, this script, and the function that
+%  loads and sorts the onsets, need to be in the 'script' folder.
 
 studyfolder = '/Users/jenniferbarredo/Desktop/CONTE_OCD';
 scriptfolder = '/Users/jenniferbarredo/Desktop/CONTE_OCD/scripts';
