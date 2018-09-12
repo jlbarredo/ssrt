@@ -1,4 +1,5 @@
 function [pGCOR,pGNR,mgoRT,pINR,SSRT]  = load_ssrt_xlsx(filename,outfolder,run)
+%% Variables passed from batch_behavior
 % filename = '/Volumes/Luria/CONTE_OCD/scripts';
 % outfolder = '/Volumes/Luria/CONTE_OCD/422/BL_MRI';
 
